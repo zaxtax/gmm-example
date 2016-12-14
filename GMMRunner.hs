@@ -18,6 +18,7 @@ import qualified System.Random.MWC.Distributions  as MWCD
 import           Control.Monad
 import qualified Data.Vector                      as V
 import qualified Data.Vector.Generic              as G
+import qualified Data.Vector.Unboxed             as U
 import qualified Data.Vector.Storable             as SV
 
 
@@ -173,10 +174,21 @@ gmmGibbs =
                                                           (\ _a91019 -> as0 ! _a91019)))))),
          branch pfalse (reject)]
 
+type Index = Int
 
-oneUpdate = do
+iterateM :: Monad m => Int -> (a -> Int -> m a) -> a -> m a
+iterateM 0 _ a = return a
+iterateM n f a = f a (n - 1) >>= iterateM (n - 1) f
+
+oneUpdate :: U.Vector Int -> Int -> IO (U.Vector Int)
+oneUpdate z i = do
+    -- print z
     g  <- MWC.createSystemRandom
-    unMeasure (gmmGibbs as zInit t 3) g
-  where size = G.length zInit
+    Just zNew <- unMeasure (gmmGibbs as zInit t i) g
+    return (G.unsafeUpd z [(i, zNew)])
+
+oneSweep :: U.Vector Int -> IO (U.Vector Int)
+oneSweep z = iterateM size oneUpdate z
+  where size = G.length z
         
-main = putStrLn "Hello"
+main = oneSweep zInit >>= print
