@@ -7,7 +7,7 @@ def dirichlet(as array(prob)):
              x * if i+1==size(as): 1 else: real2prob(1-xs[i])
 
 as = [1.0,1.0,1.0]
-data_size = 10000
+data_size = 1200
 theta <~ dirichlet(as)
 # phi <~ plate k of size(as): normal(0,1)
 phi = [-7, 3, 10]
