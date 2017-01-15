@@ -248,7 +248,7 @@ gmmGibbs2 =
                             summate (nat_ 0) (size as0) (\ _a91012 -> as0 ! _a91012)))
 
         
-dataSize = 1200
+dataSize = 3000
 
 t_ = 
   let_ (lam $ \ as1 ->
