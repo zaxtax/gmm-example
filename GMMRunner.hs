@@ -112,6 +112,4 @@ main = do
   g  <- MWC.createSystemRandom
   Just z  <- unMeasure zInit_ g
   Just t' <- unMeasure t_ g
-
-  --oneSweep g z t' >>= print
   iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
