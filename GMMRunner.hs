@@ -25,7 +25,8 @@ import GmmGibbs
 import GmmGibbs2
 
 as = G.fromList [1.0, 1.0, 1.0]        
-dataSize = 3000
+sweeps = 1000
+dataSize = 120
 
 t_ = 
   let_ (lam $ \ as1 ->
@@ -85,6 +86,10 @@ iterateM :: Monad m => Int -> (a -> b -> Int -> m b) -> a -> b -> m b
 iterateM 0 _ _ b = return b
 iterateM n f a b = f a b (n - 1) >>= iterateM (n - 1) f a
 
+iterateM2 :: Monad m => Int -> (a -> m a) -> a -> m a
+iterateM2 0 _ a = return a
+iterateM2 n f a = f a >>= iterateM2 (n - 1) f
+
 oneUpdate
     :: (MWC.GenIO, U.Vector Double)
     -> U.Vector Int
@@ -107,4 +112,6 @@ main = do
   g  <- MWC.createSystemRandom
   Just z  <- unMeasure zInit_ g
   Just t' <- unMeasure t_ g
-  oneSweep g z t' >>= print
+
+  --oneSweep g z t' >>= print
+  iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
