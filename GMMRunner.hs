@@ -18,13 +18,14 @@ import qualified System.Random.MWC.Distributions  as MWCD
 import           Control.Monad
 import qualified Data.Vector                      as V
 import qualified Data.Vector.Generic              as G
-import qualified Data.Vector.Unboxed             as U
+import qualified Data.Vector.Unboxed              as U
 import qualified Data.Vector.Storable             as SV
 
 import GmmGibbs
 import GmmGibbs2
 
-as = G.fromList [1.0, 1.0, 1.0]        
+clusters = 3
+as = G.replicate clusters 1.0
 sweeps = 1000
 dataSize = 120
 
