@@ -81,8 +81,6 @@ zInit_ =
                                                   branch pfalse (nat2prob (nat_ 1))])]))
 
         
-type Index = Int
-
 iterateM :: Monad m => Int -> (a -> b -> Int -> m b) -> a -> b -> m b
 iterateM 0 _ _ b = return b
 iterateM n f a b = f a b (n - 1) >>= iterateM (n - 1) f a
