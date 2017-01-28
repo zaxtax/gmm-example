@@ -95,7 +95,6 @@ oneUpdate
     -> Int
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
-    -- print z
     Just zNew <- unMeasure (gmmGibbs2 as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
