@@ -26,8 +26,8 @@ import GmmGibbs2
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 1000
-dataSize = 120
+sweeps = 10
+dataSize = 1200
 
 t_ = 
   let_ (lam $ \ as1 ->
