@@ -10,8 +10,8 @@ jags <- jags.model('gmm.jags',
                    n.chains = 1,
                    n.adapt = 10)
  
-update(jags, 1000)
+update(jags, 10)
  
 jags.samples(jags,
              c('z', 'phi'),
-             1000)
+             1)
