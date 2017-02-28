@@ -1,0 +1,15 @@
+model {
+    theta[1:2] ~ ddirch( ones )
+    for ( i in 1:2 ) {
+      phi[i] ~ dnorm( 0 , 1 )
+    }
+    z1 ~ dcat( theta[1:2] )
+    z2 ~ dcat( theta[1:2] )
+    z3 ~ dcat( theta[1:2] )
+    mu[1] <- phi[ z1 ]
+    mu[2] <- phi[ z2 ]
+    mu[3] <- phi[ z3 ]
+    for( i in 1 : N ) {
+      y[i] ~ dnorm( mu[i] , 1 ) 
+    }
+}

@@ -4,8 +4,8 @@ model {
       phi[i] ~ dnorm( 0 , 1 )
     }
     for( i in 1 : N ) {
-      y[i] ~ dnorm( mu[i] , 1 ) 
-      mu[i] <- phi[ z[i] ]
       z[i] ~ dcat( theta[1:3] )
+      mu[i] <- phi[ z[i] ]
+      y[i] ~ dnorm( mu[i] , 1 ) 
     }
 }
