@@ -21,8 +21,9 @@ import qualified Data.Vector.Generic              as G
 import qualified Data.Vector.Unboxed              as U
 import qualified Data.Vector.Storable             as SV
 
-import GmmGibbs
+--import GmmGibbs
 import GmmGibbs2
+--import GmmGibbs3
 
 clusters = 3
 as = G.replicate clusters 1.0
@@ -106,8 +107,17 @@ oneSweep
 oneSweep g z t = iterateM size oneUpdate (g, t) z
   where size = G.length z
         
+-- main = do
+--   g  <- MWC.createSystemRandom
+--   Just z  <- unMeasure zInit_ g
+--   print z
+--   Just t' <- unMeasure t_ g
+--   iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
+
 main = do
   g  <- MWC.createSystemRandom
-  Just z  <- unMeasure zInit_ g
-  Just t' <- unMeasure t_ g
-  iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
+  let z  = U.fromList [0, 0, 1]
+  let t' = U.fromList [3.85, 3.4, 12.0]
+  --print (gmmTestArray as z t' 0)
+  forever $ do x <- oneSweep g z t'
+               print x
