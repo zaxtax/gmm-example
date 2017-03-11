@@ -16,4 +16,4 @@ update(jags, 10)
  
 jags.samples(jags,
              c('z1', 'phi'),
-             200)
+             2000)
