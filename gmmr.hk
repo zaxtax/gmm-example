@@ -1,0 +1,4 @@
+fn t0 real: 
+        phi5075 <~ normal((17/10), (sqrt(2) / 2))
+        categorical([(exp((t0 * phi5075)) * exp(((phi5075 ^ 2) * -1/2))),
+                     (exp(((t0 ^ 2) / 6)) * (exp(t0) ^ 4) * exp((-12)))])
