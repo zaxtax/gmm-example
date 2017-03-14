@@ -1,0 +1,22 @@
+Returning from Maple:
+lam(as,HArray(HReal(Bound(`>=`,0))),lam(z,HArray(HInt(Bound(`>=`,0))),lam(t,
+HArray(HReal()),lam(docUpdate,HInt(Bound(`>=`,0)),PIECEWISE([Weight(2^(1/2*size
+(as)-1/2*size(t))*Pi^(-1/2*size(t))*exp(-1/2*SumIE(idx(t,_a910)^2,_a910 = 0 ..
+size(t)))*ProductIE(ProductIE(j+idx(as,_a),j = 0 .. SumIE(PIECEWISE([0, _a910 =
+docUpdate],[PIECEWISE([1, _a = idx(z,_a910)],[0, otherwise]), otherwise]),_a910
+= 0 .. size(t))),_a = 0 .. size(as))/ProductIE(_a+SumIE(idx(as,_a910),_a910 = 0
+.. size(as)),_a = 0 .. SumIE(PIECEWISE([0, _a910 = docUpdate],[PIECEWISE([0, 
+idx(z,_a910) < 0],[1, 0 <= idx(z,_a910)]), otherwise]),_a910 = 0 .. size(t))),
+Categorical(ary(size(as),zNew6,exp(1/2*SumIE(SumIE(PIECEWISE([idx(t,i), _a910 =
+PIECEWISE([zNew6, i = docUpdate],[idx(z,i), otherwise])],[0, otherwise]),i = 0
+.. size(t))^2/(1+SumIE(PIECEWISE([1, _a910 = PIECEWISE([zNew6, i = docUpdate],[
+idx(z,i), otherwise])],[0, otherwise]),i = 0 .. size(t))),_a910 = 0 .. size(as)
+))/ProductIE(2+2*SumIE(PIECEWISE([1, _a = PIECEWISE([zNew6, _a910 = docUpdate],
+[idx(z,_a910), otherwise])],[0, otherwise]),_a910 = 0 .. size(t)),_a = 0 .. 
+size(as))^(1/2)*(SumIE(PIECEWISE([0, _a910 = docUpdate],[PIECEWISE([1, zNew6 =
+idx(z,_a910)],[0, otherwise]), otherwise]),_a910 = 0 .. size(t))+idx(as,zNew6))
+/(SumIE(PIECEWISE([0, _a910 = docUpdate],[PIECEWISE([0, idx(z,_a910) < 0],[1, 0
+<= idx(z,_a910)]), otherwise]),_a910 = 0 .. size(t))+SumIE(idx(as,_a910),_a910
+= 0 .. size(as)))))), And(size(z) = size(t),docUpdate < size(z))],[Msum(), 
+otherwise])))))
+
