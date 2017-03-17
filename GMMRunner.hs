@@ -16,6 +16,7 @@ import           System.IO.Unsafe
 import qualified System.Random.MWC                as MWC
 import qualified System.Random.MWC.Distributions  as MWCD
 import           Control.Monad
+import           Data.List                        (permutations)
 import qualified Data.Vector                      as V
 import qualified Data.Vector.Generic              as G
 import qualified Data.Vector.Unboxed              as U
@@ -54,14 +55,25 @@ t_ =
   (plate data_size10 $
          \ i14 ->
          categorical theta11 >>= \ z15 ->
-         normal (fromInt (phi12 ! z15)) (nat2prob (nat_ 1)))
+         normal (fromInt (phi12 ! z15)) (nat2prob (nat_ 1)) >>= \ w16 ->
+         dirac (pair z15 w16))
 
         
 zInit_ = 
   (plate (nat_ dataSize) $
          \ i0 ->
          categorical (arrayLit [ prob_ 1, prob_ 1, prob_ 1 ]))
-        
+
+accuracy
+    :: U.Vector Int
+    -> U.Vector Int
+    -> Double
+accuracy x y = G.sum z / (fromIntegral $ G.length x)
+    where z = G.zipWith (\a b -> if a == b then 1 else 0) x y
+
+relabel :: [Int] -> U.Vector Int -> U.Vector Int
+relabel key = G.map (key !!)
+
 iterateM :: Monad m => Int -> (a -> b -> Int -> m b) -> a -> b -> m b
 iterateM 0 _ _ b = return b
 iterateM n f a b = f a b (n - 1) >>= iterateM (n - 1) f a
@@ -91,10 +103,18 @@ oneSweep g z t = iterateM size oneUpdate (g, t) z
 main = do
   g  <- MWC.createSystemRandom
   Just z  <- unMeasure zInit_ g
-  Just t' <- unMeasure t_ g
-  putStrLn ("zInit: " ++ show z)
-  putStrLn ("Data: "  ++ show t')
-  iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
+  Just d  <- unMeasure t_ g
+  let (zG, t') = G.unzip d
+  --putStrLn ("zInit: " ++ show z) -- DEBUG
+  --putStrLn ("Data: "  ++ show t') -- DEBUG
+
+  t1 <- getCurrentTime
+  zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
+  t2 <- getCurrentTime
+  putStrLn ("Gibbs sampling time: " ++ show (diffUTCTime t2 t1))
+  putStrLn ("Accuracy: " ++ (show . maximum $
+                                  map (\key -> accuracy zG (relabel key zPred))
+                                      (permutations [0 .. clusters - 1])))
 
 -- main = do
 --   g  <- MWC.createSystemRandom
