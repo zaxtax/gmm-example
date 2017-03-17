@@ -29,7 +29,7 @@ import GmmGibbs2
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 10
+sweeps = 1
 dataSize = 1200
 
 t_ = 
