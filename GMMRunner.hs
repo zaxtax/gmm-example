@@ -20,6 +20,7 @@ import qualified Data.Vector                      as V
 import qualified Data.Vector.Generic              as G
 import qualified Data.Vector.Unboxed              as U
 import qualified Data.Vector.Storable             as SV
+import qualified Data.Number.LogFloat             as LF
 
 --import GmmGibbs
 import GmmGibbs2
@@ -27,8 +28,8 @@ import GmmGibbs2
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 100
-dataSize = 36
+sweeps = 10
+dataSize = 1200
 
 t_ = 
   let_ (lam $ \ as1 ->
@@ -46,23 +47,10 @@ t_ =
                             branch pfalse
                                    (unsafeProb (nat2real (nat_ 1) +
                                                 negate (fromProb (xs2 ! i5))))])) $ \ dirichlet0 ->
-  let_ (array (nat_ 3) $
-              \ x9 ->
-              case_ (x9 == nat_ 0)
-                    [branch ptrue (prob_ 1),
-                     branch pfalse
-                            (case_ (x9 == nat_ 1)
-                                   [branch ptrue (prob_ 1), branch pfalse (prob_ 1)])]) $ \ as8 ->
+  let_ (arrayLit [ prob_ 1, prob_ 1, prob_ 1 ])  $ \ as8 ->
   let_ (nat_ dataSize) $ \ data_size10 ->
   dirichlet0 `app` as8 >>= \ theta11 ->
-  let_ (array (nat_ 3) $
-              \ x13 ->
-              case_ (x13 == nat_ 0)
-                    [branch ptrue (negate (nat2int (nat_ 7))),
-                     branch pfalse
-                            (nat2int (case_ (x13 == nat_ 1)
-                                            [branch ptrue (nat_ 3),
-                                             branch pfalse (nat_ 10)]))]) $ \ phi12 ->
+  let_ (arrayLit [ int_ -7, int_ 3, int_ 10 ]) $ \ phi12 ->
   (plate data_size10 $
          \ i14 ->
          categorical theta11 >>= \ z15 ->
@@ -72,15 +60,7 @@ t_ =
 zInit_ = 
   (plate (nat_ dataSize) $
          \ i0 ->
-         categorical (array (nat_ 3) $
-                            \ x1 ->
-                            case_ (x1 == nat_ 0)
-                                  [branch ptrue (nat2prob (nat_ 1)),
-                                   branch pfalse
-                                          (case_ (x1 == nat_ 1)
-                                                 [branch ptrue (nat2prob (nat_ 1)),
-                                                  branch pfalse (nat2prob (nat_ 1))])]))
-
+         categorical (arrayLit [ prob_ 1, prob_ 1, prob_ 1 ]))
         
 iterateM :: Monad m => Int -> (a -> b -> Int -> m b) -> a -> b -> m b
 iterateM 0 _ _ b = return b
@@ -96,7 +76,7 @@ oneUpdate
     -> Int
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
-    print (gmmTestArray as z t i) -- DEBUG
+    --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
     Just zNew <- unMeasure (gmmGibbs2 as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
