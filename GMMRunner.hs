@@ -25,10 +25,10 @@ import qualified Data.Vector.Storable             as SV
 import GmmGibbs2
 --import GmmGibbs3
 
-clusters = 3
+clusters = 2
 as = G.replicate clusters 1.0
 sweeps = 10
-dataSize = 1200
+dataSize = 3
 
 t_ = 
   let_ (lam $ \ as1 ->
@@ -118,6 +118,6 @@ main = do
   g  <- MWC.createSystemRandom
   let z  = U.fromList [0, 0, 1]
   let t' = U.fromList [3.85, 3.4, 12.0]
-  --print (gmmTestArray as z t' 0)
-  forever $ do x <- oneSweep g z t'
-               print x
+  print (gmmTestArray as z t' 0)
+  -- forever $ do x <- oneSweep g z t'
+  --              print x

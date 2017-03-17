@@ -6,6 +6,7 @@ import           Language.Hakaru.Runtime.Prelude
 import           Language.Hakaru.Types.Sing
 import qualified System.Random.MWC                as MWC
 import           Control.Monad
+import           Data.Number.LogFloat hiding (product)
 
 prog = 
   lam $ \ as0 ->
@@ -25,10 +26,9 @@ prog =
                             fromProb (recip (nat2prob (nat_ 2)))) *
                         exp (summate (nat_ 0)
                                      (size t2)
-                                     (\ _a9104 ->
-                                      t2 ! _a9104 ^ nat_ 2 *
-                                      fromInt (int_ -1) *
-                                      fromProb (recip (nat2prob (nat_ 2))))) *
+                                     (\ _a9104 -> t2 ! _a9104 ^ nat_ 2) *
+                             fromInt (int_ -1) *
+                             fromProb (recip (nat2prob (nat_ 2)))) *
                         product (nat_ 0)
                                 (size as0)
                                 (\ _a5 ->
@@ -82,8 +82,8 @@ prog =
                                                                                            ! i13)])
                                                                         [branch ptrue (t2 ! i13),
                                                                          branch pfalse
-                                                                                (nat2real (nat_ 0))]
-                                                                  ^ nat_ 2) *
+                                                                                (nat2real (nat_ 0))])
+                                                         ^ nat_ 2 *
                                                          fromProb (recip (nat2prob (nat_ 1 +
                                                                                     summate (nat_ 0)
                                                                                             (size t2)
@@ -99,8 +99,8 @@ prog =
                                                                                                    [branch ptrue
                                                                                                            (nat_ 1),
                                                                                                     branch pfalse
-                                                                                                           (nat_ 0)])))) *
-                                                         fromProb (recip (nat2prob (nat_ 2))))) *
+                                                                                                           (nat_ 0)]))))) *
+                                                fromProb (recip (nat2prob (nat_ 2)))) *
                                            recip (nat_ 2
                                                   `thRootOf` (nat2prob (product (nat_ 0)
                                                                                 (size as0)
@@ -120,8 +120,8 @@ prog =
                                                                                                 [branch ptrue
                                                                                                         (nat_ 1),
                                                                                                  branch pfalse
-                                                                                                        (nat_ 0)] *
-                                                                                          nat_ 2))))) *
+                                                                                                        (nat_ 0)]) *
+                                                                                 nat_ 2)))) *
                                            (nat2prob (summate (nat_ 0)
                                                               (size t2)
                                                               (\ _a91017 ->
