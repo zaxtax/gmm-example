@@ -6,8 +6,8 @@
 
 module Main where
 
-import           Prelude                          hiding (product)
-import           Language.Hakaru.Runtime.Prelude
+import           Prelude                          hiding (product, exp, log, (**))
+import           Language.Hakaru.Runtime.LogFloatPrelude
 import           Language.Hakaru.Types.Sing
 import           System.CPUTime
 import           Data.Time.Clock
@@ -25,10 +25,10 @@ import qualified Data.Vector.Storable             as SV
 import GmmGibbs2
 --import GmmGibbs3
 
-clusters = 2
+clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 10
-dataSize = 3
+sweeps = 100
+dataSize = 36
 
 t_ = 
   let_ (lam $ \ as1 ->
@@ -96,6 +96,7 @@ oneUpdate
     -> Int
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
+    print (gmmTestArray as z t i) -- DEBUG
     Just zNew <- unMeasure (gmmGibbs2 as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
@@ -107,17 +108,18 @@ oneSweep
 oneSweep g z t = iterateM size oneUpdate (g, t) z
   where size = G.length z
         
--- main = do
---   g  <- MWC.createSystemRandom
---   Just z  <- unMeasure zInit_ g
---   print z
---   Just t' <- unMeasure t_ g
---   iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
-
 main = do
   g  <- MWC.createSystemRandom
-  let z  = U.fromList [0, 0, 1]
-  let t' = U.fromList [3.85, 3.4, 12.0]
-  print (gmmTestArray as z t' 0)
-  -- forever $ do x <- oneSweep g z t'
-  --              print x
+  Just z  <- unMeasure zInit_ g
+  Just t' <- unMeasure t_ g
+  putStrLn ("zInit: " ++ show z)
+  putStrLn ("Data: "  ++ show t')
+  iterateM2 sweeps (\z -> oneSweep g z t') z >>= print
+
+-- main = do
+--   g  <- MWC.createSystemRandom
+--   let z  = U.fromList [0, 0, 1]
+--   let t' = U.fromList [3.85, 3.4, 12.0]
+--   print (gmmTestArray as z t' 0)
+--   -- forever $ do x <- oneSweep g z t'
+--   --              print x

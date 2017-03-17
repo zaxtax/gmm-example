@@ -1,8 +1,8 @@
 {-# LANGUAGE DataKinds, NegativeLiterals #-}
 module GmmGibbs2 where
 
-import           Prelude                          hiding (product)
-import           Language.Hakaru.Runtime.Prelude
+import           Prelude                          hiding (product, exp, log, (**))
+import           Language.Hakaru.Runtime.LogFloatPrelude
 import           Language.Hakaru.Types.Sing
 import qualified System.Random.MWC                as MWC
 import           Control.Monad
