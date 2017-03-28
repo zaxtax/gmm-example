@@ -30,8 +30,8 @@ import GmmBucket
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 5
-dataSize = 1200
+sweeps = 6
+dataSize = 12000
 
 t_ = 
   let_ (lam $ \ as1 ->

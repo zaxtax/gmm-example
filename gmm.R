@@ -1,8 +1,9 @@
 library('rjags')
 library('coda')
 
-N <- 1200
-y <- c(rnorm(400, -7), rnorm(400, 3), rnorm(400, 10))
+N <- 12000
+y <- c(rnorm(4000, -7), rnorm(4000, 3), rnorm(4000, 10))
+
  
 jags <- jags.model('gmm.jags',
                    data = list('y' = y,
@@ -10,12 +11,17 @@ jags <- jags.model('gmm.jags',
                                'N' = N),
                    n.chains = 1,
                    n.adapt = 10)
+
+start.time <- Sys.time()
  
-update(jags, 10)
+update(jags, 5);
 
 ## coda.samples(jags,
 ##              c('z', 'phi'),
 ##              1)
-jags.samples(jags,
-             c('z', 'phi'),
-             1)
+samples <- jags.samples(jags,
+                        c('z', 'phi'),
+                        1);
+
+end.time <- Sys.time()
+end.time - start.time
