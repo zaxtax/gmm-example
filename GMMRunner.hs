@@ -24,12 +24,13 @@ import qualified Data.Vector.Storable             as SV
 import qualified Data.Number.LogFloat             as LF
 
 --import GmmGibbs
-import GmmGibbs2
+--import GmmGibbs2
 --import GmmGibbs3
+import GmmBucket
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 1
+sweeps = 5
 dataSize = 1200
 
 t_ = 
@@ -89,7 +90,7 @@ oneUpdate
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
     --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
-    Just zNew <- unMeasure (gmmGibbs2 as z t i) g
+    Just zNew <- unMeasure (gmmGibbs as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
 oneSweep

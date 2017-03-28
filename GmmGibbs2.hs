@@ -10,7 +10,7 @@ import           Data.Number.LogFloat hiding (product)
 import qualified Data.Vector.Generic              as G
 
 
-gmmGibbs2 =
+gmmGibbs =
   lam $ \ as0 ->
   lam $ \ z1 ->
   lam $ \ t2 ->
