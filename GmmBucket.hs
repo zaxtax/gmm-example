@@ -1,13 +1,15 @@
 {-# LANGUAGE DataKinds, NegativeLiterals #-}
 module GmmBucket where
 
-import           Prelude                          hiding (product, exp, log, (**))
+import           Data.Number.LogFloat hiding (product)
+import           Prelude              hiding (product, exp, log, (**))
+
 import           Language.Hakaru.Runtime.LogFloatPrelude
 import           Language.Hakaru.Types.Sing
 import qualified System.Random.MWC                as MWC
 import           Control.Monad
 
-gmmGibbs = 
+prog = 
   lam $ \ as0 ->
   lam $ \ z1 ->
   lam $ \ t2 ->

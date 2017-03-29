@@ -26,7 +26,7 @@ import qualified Data.Number.LogFloat             as LF
 --import GmmGibbs
 --import GmmGibbs2
 --import GmmGibbs3
-import GmmBucket
+import qualified GmmBucket
 
 clusters = 3
 as = G.replicate clusters 1.0
@@ -90,7 +90,7 @@ oneUpdate
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
     --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
-    Just zNew <- unMeasure (gmmGibbs as z t i) g
+    Just zNew <- unMeasure (GmmBucket.prog as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
 oneSweep
