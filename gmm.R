@@ -9,7 +9,7 @@ if (length(args)==0) {
   N <- as.numeric(args[1])
   y <- c(rnorm(N/3, -7), rnorm(N/3, 3), rnorm(N/3, 10))
 }
-
+zTrue <- c(rep(1,N/3), rep(2,N/3), rep(3,N/3))
 
 jags <- jags.model('gmm.jags',
                    data = list('y' = y,
@@ -34,3 +34,10 @@ end.time <- Sys.time()
 duration <- end.time - start.time
 # format(duration)
 cat("JAGS",N,as.double(duration), sep=",", fill=TRUE)
+
+remap <- as.numeric(as.factor(samples$phi))
+zPred <- sapply(samples$z, function (i) remap[i])
+
+accuracy <- length(zTrue[zPred == zTrue])/length(zTrue)
+accuracy
+
