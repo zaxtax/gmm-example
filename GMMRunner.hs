@@ -23,17 +23,19 @@ import qualified Data.Vector.Unboxed              as U
 import qualified Data.Vector.Storable             as SV
 import qualified Data.Number.LogFloat             as LF
 
+--import qualified GmmBase
 --import GmmGibbs
---import GmmGibbs2
+import GmmGibbs2
 --import GmmGibbs3
 import qualified GmmBucket
 
 clusters = 3
 as = G.replicate clusters 1.0
-sweeps = 6
-dataSize = 12000
 
-t_ = 
+diffToDouble :: NominalDiffTime -> Double
+diffToDouble = fromRational . toRational
+
+t_ dataSize = 
   let_ (lam $ \ as1 ->
         (plate (unsafeNat (nat2int (size as1) +
                            negate (nat2int (nat_ 1)))) $
@@ -60,7 +62,7 @@ t_ =
          dirac (pair z15 w16))
 
         
-zInit_ = 
+zInit_ dataSize =
   (plate (nat_ dataSize) $
          \ i0 ->
          categorical (arrayLit [ prob_ 1, prob_ 1, prob_ 1 ]))
@@ -83,6 +85,24 @@ iterateM2 :: Monad m => Int -> (a -> m a) -> a -> m a
 iterateM2 0 _ a = return a
 iterateM2 n f a = f a >>= iterateM2 (n - 1) f
 
+oneUpdateB
+    :: (MWC.GenIO, U.Vector Double)
+    -> U.Vector Int
+    -> Int
+    -> IO (U.Vector Int)
+oneUpdateB (g,t) z i = do
+    --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
+    Just zNew <- unMeasure (GmmBucket.prog as z t i) g
+    return (G.unsafeUpd z [(i, zNew)])
+
+oneSweepB
+    :: MWC.GenIO
+    -> U.Vector Int
+    -> U.Vector Double
+    -> IO (U.Vector Int)
+oneSweepB g z t = iterateM size oneUpdateB (g, t) z
+  where size = G.length z
+
 oneUpdate
     :: (MWC.GenIO, U.Vector Double)
     -> U.Vector Int
@@ -90,7 +110,7 @@ oneUpdate
     -> IO (U.Vector Int)
 oneUpdate (g,t) z i = do
     --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
-    Just zNew <- unMeasure (GmmBucket.prog as z t i) g
+    Just zNew <- unMeasure (gmmGibbs as z t i) g
     return (G.unsafeUpd z [(i, zNew)])
 
 oneSweep
@@ -100,27 +120,62 @@ oneSweep
     -> IO (U.Vector Int)
 oneSweep g z t = iterateM size oneUpdate (g, t) z
   where size = G.length z
-        
-main = do
-  g  <- MWC.createSystemRandom
-  Just z  <- unMeasure zInit_ g
-  Just d  <- unMeasure t_ g
+
+
+data Experiment = NoBucket | YaBucket
+
+runExperiment :: Experiment
+              -> Int
+              -> Int
+              -> Int
+              -> MWC.GenIO
+              -> IO ()
+runExperiment e dataSize sweeps trials g = do
+  Just z  <- unMeasure (zInit_ dataSize) g
+  Just d  <- unMeasure (t_ dataSize) g
   let (zG, t') = G.unzip d
-  --putStrLn ("zInit: " ++ show z) -- DEBUG
-  --putStrLn ("Data: "  ++ show t') -- DEBUG
+  case e of
+    NoBucket -> replicateM_ trials $ do
+      t1 <- getCurrentTime
+      zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
+      t2 <- getCurrentTime
+      putStrLn ("NoBucket," ++
+                show dataSize ++ "," ++
+                show (diffToDouble $ diffUTCTime t2 t1))
+    YaBucket -> replicateM_ trials $ do
+      t1 <- getCurrentTime
+      zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
+      t2 <- getCurrentTime
+      putStrLn ("Bucket," ++
+                show dataSize ++ "," ++
+                show (diffToDouble $ diffUTCTime t2 t1))
 
-  t1 <- getCurrentTime
-  zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
-  t2 <- getCurrentTime
-  putStrLn ("Gibbs sampling time: " ++ show (diffUTCTime t2 t1))
-  putStrLn ("Accuracy: " ++ (show . maximum $
-                                  map (\key -> accuracy zG (relabel key zPred))
-                                      (permutations [0 .. clusters - 1])))
+      
+main = do
+  args <- getArgs
+  case length args == 2 of
+    False -> putStrLn "./gmm <dataSize> <sweeps>"
+    True  -> do
+        let [dataSize, sweeps] = map read args :: [Int]
+        g <- MWC.createSystemRandom
+        Just z  <- unMeasure (zInit_ dataSize) g
+        Just d  <- unMeasure (t_ dataSize) g
+        let (zG, t') = G.unzip d
+        --putStrLn ("zInit: " ++ show z) -- DEBUG
+        --putStrLn ("Data: "  ++ show t') -- DEBUG
 
--- main = do
---   g  <- MWC.createSystemRandom
---   let z  = U.fromList [0, 0, 1]
---   let t' = U.fromList [3.85, 3.4, 12.0]
---   print (gmmTestArray as z t' 0)
---   -- forever $ do x <- oneSweep g z t'
---   --              print x
+        t1 <- getCurrentTime
+        zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
+        t2 <- getCurrentTime
+        putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
+        putStrLn ("Accuracy: " ++ (show . maximum $
+                                   map (\key -> accuracy zG (relabel key zPred))
+                                   (permutations [0 .. clusters - 1])))
+
+main2 = do
+  g  <- MWC.createSystemRandom
+  let sweeps = 1
+  putStrLn ("inf_method, dataSize, time")
+  forM [500, 750 .. 2500] $ \d -> do
+         runExperiment NoBucket d sweeps 10 g
+         runExperiment YaBucket d sweeps 10 g
