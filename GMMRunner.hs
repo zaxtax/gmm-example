@@ -22,6 +22,8 @@ import qualified Data.Vector.Generic              as G
 import qualified Data.Vector.Unboxed              as U
 import qualified Data.Vector.Storable             as SV
 import qualified Data.Number.LogFloat             as LF
+import           Text.Printf                      (printf)
+
 
 --import qualified GmmBase
 --import GmmGibbs
@@ -153,10 +155,10 @@ runExperiment e dataSize sweeps trials g = do
       
 main = do
   args <- getArgs
-  case length args == 2 of
-    False -> putStrLn "./gmm <dataSize> <sweeps>"
+  case length args == 3 of
+    False -> putStrLn "./gmm <dataSize> <sweeps> <trial>"
     True  -> do
-        let [dataSize, sweeps] = map read args :: [Int]
+        let [dataSize, sweeps, trial] = map read args :: [Int]
         g <- MWC.createSystemRandom
         Just z  <- unMeasure (zInit_ dataSize) g
         Just d  <- unMeasure (t_ dataSize) g
@@ -167,10 +169,11 @@ main = do
         t1 <- getCurrentTime
         zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
         t2 <- getCurrentTime
-        putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
-        putStrLn ("Accuracy: " ++ (show . maximum $
-                                   map (\key -> accuracy zG (relabel key zPred))
-                                   (permutations [0 .. clusters - 1])))
+        -- putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
+        printf "Hakaru,%d,%d," sweeps trial
+        putStrLn (show . maximum $
+                  map (\key -> accuracy zG (relabel key zPred))
+                  (permutations [0 .. clusters - 1]))
 
 main2 = do
   g  <- MWC.createSystemRandom
