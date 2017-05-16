@@ -15,10 +15,10 @@ prog =
   lam $ \ t2 ->
   lam $ \ docUpdate3 ->
   categorical (array (size as0) $
-                     \ zNew64 ->
+                     \ zNew下4 ->
                      exp (summate (nat_ 0)
                                   (size as0)
-                                  (\ _a9105 ->
+                                  (\ _a丑专5 ->
                                    (let_ (bucket (nat_ 0)
                                                  (size t2)
                                                  ((r_split (\ (i7,()) -> i7 == docUpdate3)
@@ -26,10 +26,10 @@ prog =
                                                                      r_nop)
                                                            (r_index (\ () -> size as0)
                                                                     (\ (i7,()) -> z1 ! i7)
-                                                                    (r_add (\ (i7,(_a9108,())) ->
+                                                                    (r_add (\ (i7,(_a丑专8,())) ->
                                                                             t2
                                                                             ! i7)))))) $ \ summary6 ->
-                                    case_ (_a9105 == zNew64)
+                                    case_ (_a丑专5 == zNew下4)
                                           [branch ptrue
                                                   (case_ (case_ summary6
                                                                 [branch (ppair PVar PVar)
@@ -38,7 +38,7 @@ prog =
                                                                  (\ y11 z12 -> y11)]),
                                            branch pfalse (real_ 0)] +
                                     case_ summary6 [branch (ppair PVar PVar) (\ y13 z14 -> z14)]
-                                    ! _a9105)
+                                    ! _a丑专5)
                                    ^ nat_ 2 *
                                    fromProb (recip (nat2prob (nat_ 1 +
                                                               (let_ (bucket (nat_ 0)
@@ -54,9 +54,9 @@ prog =
                                                                                                (\ (i16,()) ->
                                                                                                 z1
                                                                                                 ! i16)
-                                                                                               (r_add (\ (i16,(_a91017,())) ->
+                                                                                               (r_add (\ (i16,(_a丑专17,())) ->
                                                                                                        nat_ 1)))))) $ \ summary15 ->
-                                                               case_ (_a9105 == zNew64)
+                                                               case_ (_a丑专5 == zNew下4)
                                                                      [branch ptrue
                                                                              (case_ (case_ summary15
                                                                                            [branch (ppair PVar
@@ -73,7 +73,7 @@ prog =
                                                                case_ summary15
                                                                      [branch (ppair PVar PVar)
                                                                              (\ y22 z23 -> z23)]
-                                                               ! _a9105))))) *
+                                                               ! _a丑专5))))) *
                           real_ (1/2)) *
                      recip (nat_ 2
                             `thRootOf` (nat2prob (product (nat_ 0)
@@ -82,20 +82,20 @@ prog =
                                                            nat_ 2 +
                                                            (let_ (bucket (nat_ 0)
                                                                          (size t2)
-                                                                         ((r_split (\ (_a91026,()) ->
-                                                                                    _a91026
+                                                                         ((r_split (\ (_a丑专26,()) ->
+                                                                                    _a丑专26
                                                                                     == docUpdate3)
-                                                                                   (r_fanout (r_add (\ (_a91026,()) ->
+                                                                                   (r_fanout (r_add (\ (_a丑专26,()) ->
                                                                                                      nat_ 1))
                                                                                              r_nop)
                                                                                    (r_index (\ () ->
                                                                                              size as0)
-                                                                                            (\ (_a91026,()) ->
+                                                                                            (\ (_a丑专26,()) ->
                                                                                              z1
-                                                                                             ! _a91026)
-                                                                                            (r_add (\ (_a91026,(_a27,())) ->
+                                                                                             ! _a丑专26)
+                                                                                            (r_add (\ (_a丑专26,(_a27,())) ->
                                                                                                     nat_ 1)))))) $ \ summary25 ->
-                                                            case_ (_a24 == zNew64)
+                                                            case_ (_a24 == zNew下4)
                                                                   [branch ptrue
                                                                           (case_ (case_ summary25
                                                                                         [branch (ppair PVar
@@ -116,23 +116,23 @@ prog =
                                                            nat_ 2)))) *
                      ((let_ (bucket (nat_ 0)
                                     (size t2)
-                                    ((r_split (\ (_a91035,()) -> _a91035 == docUpdate3)
+                                    ((r_split (\ (_a丑专35,()) -> _a丑专35 == docUpdate3)
                                               r_nop
                                               (r_index (\ () -> size as0)
-                                                       (\ (_a91035,()) -> z1 ! _a91035)
-                                                       (r_add (\ (_a91035,(zNew636,())) ->
+                                                       (\ (_a丑专35,()) -> z1 ! _a丑专35)
+                                                       (r_add (\ (_a丑专35,(zNew下36,())) ->
                                                                nat_ 1)))))) $ \ summary34 ->
                        nat2prob (case_ summary34
                                        [branch (ppair PVar PVar) (\ y37 z38 -> z38)]
-                                 ! zNew64)) +
-                      as0 ! zNew64) *
+                                 ! zNew下4)) +
+                      as0 ! zNew下4) *
                      recip (nat2prob (summate (nat_ 0)
                                               (size t2)
-                                              (\ _a91039 ->
-                                               case_ (_a91039 == docUpdate3)
+                                              (\ _a丑专39 ->
+                                               case_ (_a丑专39 == docUpdate3)
                                                      [branch ptrue (nat_ 0),
                                                       branch pfalse
-                                                             (case_ (z1 ! _a91039 < nat_ 0)
+                                                             (case_ (z1 ! _a丑专39 < nat_ 0)
                                                                     [branch ptrue (nat_ 0),
                                                                      branch pfalse (nat_ 1)])])) +
-                            summate (nat_ 0) (size as0) (\ _a91040 -> as0 ! _a91040)))
+                            summate (nat_ 0) (size as0) (\ _a丑专40 -> as0 ! _a丑专40)))
