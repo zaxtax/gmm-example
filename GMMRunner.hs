@@ -93,8 +93,8 @@ oneUpdateB
     -> Int
     -> IO (U.Vector Int)
 oneUpdateB (g,t) z i = do
-    --print $ G.map LF.logFromLogFloat (gmmTestArray as z t i) -- DEBUG
     Just zNew <- unMeasure (GmmBucket.prog as z t i) g
+    --print (z, i, zNew)
     return (G.unsafeUpd z [(i, zNew)])
 
 oneSweepB
@@ -167,8 +167,9 @@ main = do
         --putStrLn ("Data: "  ++ show t') -- DEBUG
 
         t1 <- getCurrentTime
-        zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
+        zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
         t2 <- getCurrentTime
+
         -- putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
         printf "Hakaru,%d,%d," sweeps trial
         putStrLn (show . maximum $
