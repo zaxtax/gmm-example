@@ -5,3 +5,5 @@ clean:
 simplify:
 	export LOCAL_MAPLE="`which maple`"
 	simplify gmm_gibbs.hk > gmm_gibbs_simp.hk
+experiment:
+	bash run.sh
