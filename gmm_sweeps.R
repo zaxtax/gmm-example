@@ -5,10 +5,11 @@ suppressMessages(library('MCMCpack'))
 suppressMessages(library('LaplacesDemon'))
 
 args = commandArgs(trailingOnly=TRUE)
-if (length(args) != 2) {
-   cat("gmm.R <dataSize> <trial>", fill=TRUE)
+if (length(args) != 3) {
+   cat("gmm.R <dataSize> <sweeps> <trial>", fill=TRUE)  
 } else {
     N      <- as.numeric(args[1])
+    sweeps <- as.numeric(args[2])  
     trial  <- as.numeric(args[2])
 
 phi   <- c(-7, 3, 10)
@@ -29,7 +30,7 @@ jags <- jags.model('gmm.jags',
 
 start2.time <- Sys.time()
  
-update(jags, 1);
+update(jags, sweeps);
 
 ## samplesC <- coda.samples(jags,
 ##                          c('z', 'phi'),
@@ -49,11 +50,12 @@ accuracy <- length(zTrue[zPred == zTrue])/length(zTrue)
 
 # format(duration)
 cat("JAGS",
-    N,
+    format(sweeps),
     format(trial),
+    #N,
     format(accuracy),
-    as.double(duration),
-    as.double(duration2),
+    #as.double(duration),
+    #as.double(duration2),
     sep=",",
     fill=TRUE)
 }
