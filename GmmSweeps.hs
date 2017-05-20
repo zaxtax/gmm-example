@@ -122,41 +122,26 @@ oneSweep
     -> IO (U.Vector Int)
 oneSweep g z t = iterateM size oneUpdate (g, t) z
   where size = G.length z
-
-
-data Experiment = NoBucket | YaBucket
-
-runExperiment :: Experiment
-              -> Int
-              -> Int
-              -> Int
-              -> MWC.GenIO
-              -> IO ()
-runExperiment e dataSize sweeps trials g = do
-  Just z  <- unMeasure (zInit_ dataSize) g
-  Just d  <- unMeasure (t_ dataSize) g
-  let (zG, t') = G.unzip d
-  case e of
-    NoBucket -> replicateM_ trials $ do
-      t1 <- getCurrentTime
-      zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
-      t2 <- getCurrentTime
-      putStrLn ("NoBucket," ++
-                show dataSize ++ "," ++
-                show (diffToDouble $ diffUTCTime t2 t1))
-    YaBucket -> replicateM_ trials $ do
-      t1 <- getCurrentTime
-      zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
-      t2 <- getCurrentTime
-      putStrLn ("Bucket," ++
-                show dataSize ++ "," ++
-                show (diffToDouble $ diffUTCTime t2 t1))
-
-
+      
 main = do
-  g  <- MWC.createSystemRandom
-  let sweeps = 1
-  --putStrLn ("inf_method, dataSize, time")
-  forM [500, 750 .. 2500] $ \d -> do
-         runExperiment NoBucket d sweeps 10 g
-         runExperiment YaBucket d sweeps 10 g
+  args <- getArgs
+  case length args == 3 of
+    False -> putStrLn "./gmm <dataSize> <sweeps> <trial>"
+    True  -> do
+        let [dataSize, sweeps, trial] = map read args :: [Int]
+        g <- MWC.createSystemRandom
+        Just z  <- unMeasure (zInit_ dataSize) g
+        Just d  <- unMeasure (t_ dataSize) g
+        let (zG, t') = G.unzip d
+        --putStrLn ("zInit: " ++ show z) -- DEBUG
+        --putStrLn ("Data: "  ++ show t') -- DEBUG
+
+        t1 <- getCurrentTime
+        zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
+        t2 <- getCurrentTime
+
+        -- putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
+        printf "Hakaru,%d,%d," sweeps trial
+        putStrLn (show . maximum $
+                  map (\key -> accuracy zG (relabel key zPred))
+                  (permutations [0 .. clusters - 1]))
