@@ -124,7 +124,7 @@ oneSweep g z t = iterateM size oneUpdate (g, t) z
   where size = G.length z
 
 
-data Experiment = NoBucket | YaBucket
+data Experiment = NoBucket | Bucket deriving (Show)
 
 runExperiment :: Experiment
               -> Int
@@ -136,24 +136,17 @@ runExperiment e dataSize sweeps trial g = do
   Just z  <- unMeasure (zInit_ dataSize) g
   Just d  <- unMeasure (t_ dataSize) g
   let (zG, t') = G.unzip d
-  case e of
-    NoBucket -> do
-      t1 <- getCurrentTime
-      zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
-      t2 <- getCurrentTime
-      putStrLn ("NoBucket," ++
-                show dataSize ++ "," ++
-                show trial ++ "," ++
-                show (diffToDouble $ diffUTCTime t2 t1))
-    YaBucket -> do
-      t1 <- getCurrentTime
-      zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
-      t2 <- getCurrentTime
-      putStrLn ("Bucket," ++
-                show dataSize ++ "," ++
-                show trial ++ "," ++
-                show (diffToDouble $ diffUTCTime t2 t1))
 
+  t1 <- getCurrentTime
+  zPred <- iterateM2 sweeps (\z ->
+               case e of
+                 NoBucket -> oneSweep  g z t'
+                 Bucket   -> oneSweepB g z t') z
+  t2 <- getCurrentTime
+  putStrLn (show e ++ "," ++
+            show dataSize ++ "," ++
+            show trial ++ "," ++
+            show (diffToDouble $ diffUTCTime t2 t1))
 
 main = do
   args <- getArgs
@@ -164,4 +157,4 @@ main = do
         g <- MWC.createSystemRandom
         --putStrLn ("inf_method, dataSize, time")
         runExperiment NoBucket dataSize sweeps trial g
-        runExperiment YaBucket dataSize sweeps trial g
+        runExperiment Bucket   dataSize sweeps trial g
