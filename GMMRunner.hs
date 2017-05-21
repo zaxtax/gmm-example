@@ -132,31 +132,36 @@ runExperiment :: Experiment
               -> Int
               -> MWC.GenIO
               -> IO ()
-runExperiment e dataSize sweeps trials g = do
+runExperiment e dataSize sweeps trial g = do
   Just z  <- unMeasure (zInit_ dataSize) g
   Just d  <- unMeasure (t_ dataSize) g
   let (zG, t') = G.unzip d
   case e of
-    NoBucket -> replicateM_ trials $ do
+    NoBucket -> do
       t1 <- getCurrentTime
       zPred <- iterateM2 sweeps (\z -> oneSweep g z t') z
       t2 <- getCurrentTime
       putStrLn ("NoBucket," ++
                 show dataSize ++ "," ++
+                show trial ++ "," ++
                 show (diffToDouble $ diffUTCTime t2 t1))
-    YaBucket -> replicateM_ trials $ do
+    YaBucket -> do
       t1 <- getCurrentTime
       zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
       t2 <- getCurrentTime
       putStrLn ("Bucket," ++
                 show dataSize ++ "," ++
+                show trial ++ "," ++
                 show (diffToDouble $ diffUTCTime t2 t1))
 
 
 main = do
-  g  <- MWC.createSystemRandom
-  let sweeps = 1
-  --putStrLn ("inf_method, dataSize, time")
-  forM [500, 750 .. 2500] $ \d -> do
-         runExperiment NoBucket d sweeps 10 g
-         runExperiment YaBucket d sweeps 10 g
+  args <- getArgs
+  case length args == 3 of
+    False -> putStrLn "./gmm <dataSize> <sweeps> <trial>"
+    True  -> do
+        let [dataSize, sweeps, trial] = map read args :: [Int]
+        g <- MWC.createSystemRandom
+        --putStrLn ("inf_method, dataSize, time")
+        runExperiment NoBucket dataSize sweeps trial g
+        runExperiment YaBucket dataSize sweeps trial g
