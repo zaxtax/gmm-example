@@ -126,7 +126,7 @@ oneSweep g z t = iterateM size oneUpdate (g, t) z
 main = do
   args <- getArgs
   case length args == 3 of
-    False -> putStrLn "./gmm <dataSize> <sweeps> <trial>"
+    False -> putStrLn "./gmmSweeps <dataSize> <sweeps> <trial>"
     True  -> do
         let [dataSize, sweeps, trial] = map read args :: [Int]
         g <- MWC.createSystemRandom
