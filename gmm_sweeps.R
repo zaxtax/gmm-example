@@ -6,7 +6,7 @@ suppressMessages(library('LaplacesDemon'))
 
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) != 3) {
-   cat("gmm.R <dataSize> <sweeps> <trial>", fill=TRUE)  
+   cat("gmm_sweeps.R <dataSize> <sweeps> <trial>", fill=TRUE)  
 } else {
     N      <- as.numeric(args[1])
     sweeps <- as.numeric(args[2])  
