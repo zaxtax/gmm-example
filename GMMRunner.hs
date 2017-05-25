@@ -146,6 +146,9 @@ runExperiment e dataSize sweeps trial g = do
   putStrLn (show e ++ "," ++
             show dataSize ++ "," ++
             show trial ++ "," ++
+            (show . maximum $
+                  map (\key -> accuracy zG (relabel key zPred))
+                  (permutations [0 .. clusters - 1])) ++ "," ++
             show (diffToDouble $ diffUTCTime t2 t1))
 
 main = do
