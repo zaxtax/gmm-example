@@ -29,7 +29,7 @@ jags <- jags.model('gmm.jags',
 
 start2.time <- Sys.time()
  
-update(jags, 1);
+update(jags, 5);
 
 ## samplesC <- coda.samples(jags,
 ##                          c('z', 'phi'),
