@@ -76,6 +76,15 @@ accuracy
 accuracy x y = G.sum z / (fromIntegral $ G.length x)
     where z = G.zipWith (\a b -> if a == b then 1 else 0) x y
 
+accuracyWithPerm
+    :: U.Vector Int
+    -> U.Vector Int
+    -> Double
+accuracyWithPerm x y =
+    maximum $
+    map (\key -> accuracy x (relabel key y))
+            (permutations [0 .. clusters - 1])
+
 relabel :: [Int] -> U.Vector Int -> U.Vector Int
 relabel key = G.map (key !!)
 
@@ -142,6 +151,4 @@ main = do
 
         -- putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
         printf "Hakaru,%d,%d," sweeps trial
-        putStrLn (show . maximum $
-                  map (\key -> accuracy zG (relabel key zPred))
-                  (permutations [0 .. clusters - 1]))
+        print (accuracyWithPerm zG zPred)
