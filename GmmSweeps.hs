@@ -92,9 +92,9 @@ iterateM :: Monad m => Int -> (a -> b -> Int -> m b) -> a -> b -> m b
 iterateM 0 _ _ b = return b
 iterateM n f a b = f a b (n - 1) >>= iterateM (n - 1) f a
 
-iterateM2 :: Monad m => Int -> (a -> m a) -> a -> m a
+iterateM2 :: Monad m => Int -> (a -> Int ->  m a) -> a -> m a
 iterateM2 0 _ a = return a
-iterateM2 n f a = f a >>= iterateM2 (n - 1) f
+iterateM2 n f a = f a (n - 1) >>= iterateM2 (n - 1) f
 
 oneUpdateB
     :: (MWC.GenIO, U.Vector Double)
@@ -145,10 +145,15 @@ main = do
         --putStrLn ("zInit: " ++ show z) -- DEBUG
         --putStrLn ("Data: "  ++ show t') -- DEBUG
 
-        t1 <- getCurrentTime
-        zPred <- iterateM2 sweeps (\z -> oneSweepB g z t') z
-        t2 <- getCurrentTime
+        iterateM2 sweeps (\z i -> do
+            z' <- oneSweepB g z t'
+            printf "Hakaru,%d,%d,%.6f\n"
+                       (sweeps - i)
+                       trial
+                       (accuracyWithPerm zG z')
+            return z') z
+        return ()
 
         -- putStrLn ("Gibbs sampling time: " ++ show (diffToDouble $ diffUTCTime t2 t1))
-        printf "Hakaru,%d,%d," sweeps trial
-        print (accuracyWithPerm zG zPred)
+        -- printf "Hakaru,%d,%d," sweeps trial
+        -- print (accuracyWithPerm zG zPred)
