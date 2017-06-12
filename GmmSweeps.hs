@@ -148,8 +148,8 @@ main = do
         iterateM2 sweeps (\z i -> do
             z' <- oneSweepB g z t'
             printf "Hakaru,%d,%d,%.6f\n"
-                       (sweeps - i)
                        trial
+                       (sweeps - i)
                        (accuracyWithPerm zG z')
             return z') z
         return ()
