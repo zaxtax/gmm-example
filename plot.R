@@ -44,6 +44,12 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 
 data2 <- summarySE(data, measurevar="time", groupvars=c("inf_method","dataSize"))
 
+timing.fields = c("NoBucket", "Bucket", "JAGS_init", "JAGS")
+timing.labels = c("Code-generated with simplifications",
+                  "… and with histogram optimization",
+                  "JAGS + initialization",
+                  "JAGS")
+
 p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method)) + 
         geom_errorbar(aes(ymin=time-se, ymax=time+se), colour="black", width=.1, position=pd) +
         geom_line(position=pd) +
@@ -52,18 +58,16 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
         ylab("Run time (secs)") +
         geom_point(aes(shape=inf_method), size=3) +
         scale_shape(name="",    # Legend label, use darker colors
-                    breaks=c("NoBucket", "Bucket", "JAGS_init", "JAGS"),
-                    labels=c("Code-generated with simplifications",
-                             "… and with histogram optimization",
-                             "JAGS + initialization",
-                             "JAGS")) +
-        scale_color_hue(name="",    # Legend label, use darker colors
-                        breaks=c("NoBucket", "Bucket", "JAGS_init", "JAGS"),
-                        labels=c("Code-generated with simplifications",
-                                 "… and with histogram optimization",
-                                 "JAGS + initialization",
-                                 "JAGS"),
-                        l=40) +
+                    breaks=timing.fields,
+                    labels=timing.labels) +
+        ## scale_color_hue(name="",    # Legend label, use darker colors
+        ##                 breaks=timing.fields,
+        ##                 labels=timing.labels,
+        ##                 l=40) +
+        scale_color_manual(name="",
+                           breaks=timing.fields,
+                           labels=timing.labels,
+                           values=c("navyblue", "red3", "firebrick2", "blueviolet")) +
     
         #ggtitle("Run times for Gaussian Mixture Model") +
         #expand_limits(x=0,y=0) +                        # Expand y range
