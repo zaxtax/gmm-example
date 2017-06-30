@@ -93,4 +93,4 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
               legend.position=c(0.02,1.0))               # Position legend in bottom right
 
 ggsave("gmm_plot_cm.pdf", p) # width=4, height=3.5)
-embed_fonts("gmm_plot_cm.pdf", outfile="gmmplot.pdf")
+embed_fonts("gmm_plot_cm.pdf", outfile="plots/gmmplot.pdf")
