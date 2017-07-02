@@ -67,7 +67,7 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
         scale_color_manual(name="",
                            breaks=timing.fields,
                            labels=timing.labels,
-                           values=c("navyblue", "red3", "firebrick2", "blueviolet")) +
+                           values=c("navyblue", "firebrick3", "red3", "blueviolet")) +
     
         #ggtitle("Run times for Gaussian Mixture Model") +
         #expand_limits(x=0,y=0) +                        # Expand y range
