@@ -71,7 +71,8 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
     
         #ggtitle("Run times for Gaussian Mixture Model") +
         #expand_limits(x=0,y=0) +                        # Expand y range
-        scale_y_continuous(expand = c(0, 0), limits= c(0,4)) +
+        scale_x_continuous(expand=c(0, 0), limits=c(0,2501)) +
+        scale_y_continuous(expand=c(0, 0), limits=c(0,4)) +
         ##scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
         theme_bw() +
     
@@ -84,7 +85,7 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
         theme(axis.title.y = element_text(size = rel(1.5), angle = 90)) +
         theme(axis.title.x = element_text(size = rel(1.5))) +
         theme(axis.text.y = element_text(size = rel(1.5), angle = 90)) +
-        theme(axis.text.x = element_text(size = rel(1.5))) +
+        theme(axis.text.x = element_text(size = rel(1.5), hjust = 1)) +
         theme(legend.title = element_text(size = rel(1.5))) +
         theme(legend.text = element_text(size = rel(1.3))) +
         theme(legend.background = element_rect(fill = "transparent")) +
