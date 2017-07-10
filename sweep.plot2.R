@@ -1,11 +1,15 @@
 library('ggplot2')
 
 data <- read.csv("gmm_sweeps2.csv", header=T)
+data$Accuracy <- data$Accuracy * 100
 
 p <- ggplot(data,
             aes(x=Sweeps, y=Accuracy, group=interaction(Chains, System), colour=System)) +
      geom_line(alpha=0.4) +
+     ylab("Accuracy (%)") +
      guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+     scale_color_manual(name="",
+                        values=c("cornflowerblue", "firebrick2")) +
      theme_bw() + 
      theme(panel.grid.major = element_line(colour = "black", size=0.15)) +
      theme(panel.grid.minor = element_blank()) +
@@ -24,4 +28,4 @@ p <- ggplot(data,
            legend.position=c(0.85,0.15))               # Position legend in bottom right
 
 
-ggsave("gmmsweeps2.pdf", p)
+ggsave("plots/gmmsweeps2.pdf", p)
