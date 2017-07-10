@@ -45,8 +45,8 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 data2 <- summarySE(data, measurevar="time", groupvars=c("inf_method","dataSize"))
 
 timing.fields = c("NoBucket", "Bucket", "JAGS_init", "JAGS")
-timing.labels = c("Code-generated with simplifications",
-                  "… and with histogram optimization",
+timing.labels = c("Hakaru without histogram optimization",
+                  "Hakaru with histogram optimization",
                   "JAGS + initialization",
                   "JAGS")
 
