@@ -60,7 +60,7 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
         scale_shape_manual(name="",    # Legend label, use darker colors
                            breaks=timing.fields,
                            labels=timing.labels,
-                           values=c(15,17,18,19)) +
+                           values=c(19,18,17,15)) +
         ## scale_color_hue(name="",    # Legend label, use darker colors
         ##                 breaks=timing.fields,
         ##                 labels=timing.labels,
