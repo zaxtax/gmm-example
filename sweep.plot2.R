@@ -5,7 +5,6 @@ data$Accuracy <- data$Accuracy * 100
 
 p <- ggplot(data,
             aes(x=Sweeps, y=Accuracy, group=interaction(Chains, System), colour=System)) +
-     facet_grid(System ~ ., scales = "free_y") +
      geom_line(alpha=0.4) +
      ylab("Accuracy (%)") +
      guides(colour = guide_legend(override.aes = list(alpha = 1))) +
@@ -31,7 +30,7 @@ p <- ggplot(data,
      theme(legend.text = element_text(size = rel(1.3))) +
      theme(legend.background = element_rect(fill = "transparent")) +
      theme(legend.justification=c(0.02,1.0),
-           legend.position="none")               # Position legend in bottom right
+           legend.position=c(0.85,0.15))               # Position legend in bottom right
 
 
-ggsave("plots/gmmsweeps3.pdf", p)
+ggsave("plots/gmmsweeps2.pdf", p)

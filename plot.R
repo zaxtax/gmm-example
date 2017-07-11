@@ -80,7 +80,8 @@ p <- ggplot(data2, aes(x=dataSize, y=time, colour=inf_method, group=inf_method))
         theme(panel.grid.major = element_line(colour = "black", size=0.15)) +
         theme(panel.grid.minor = element_blank()) +
         theme(panel.grid.major.x = element_blank()) +
-        theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+        theme(panel.border = element_blank()) + #rect(colour = "black", fill=NA, size=1)) +
+        theme(axis.line = element_line(colour = "black")) +
         theme(text = element_text(family="Times")) +
         theme(plot.title = element_text(size = rel(2))) +
         theme(axis.title.y = element_text(size = rel(1.5), angle = 90)) +
