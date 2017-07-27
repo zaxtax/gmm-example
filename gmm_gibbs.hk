@@ -18,7 +18,7 @@ fn docUpdate nat:
     t <~ plate i of size(t):
            zz = if i == docUpdate: zNew else: z[i]
            zz <~ observe(categorical(theta), zz)
-           observer(normal(phi[zz], 1), t[i])
+           observe(normal(phi[zz], 1), t[i])
 
     return zNew
 
