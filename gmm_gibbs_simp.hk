@@ -1,92 +1,47 @@
-fn as array(prob): 
- fn z array(nat): 
-  fn t array(real): 
-   fn docUpdate nat: 
-    (match ((size(z) == size(t)) && (docUpdate < size(z))): 
-      true: 
-       weight(((2
-                 ** 
-                ((nat2real(size(as)) / 2) + (nat2real(size(t)) * -1/2)))
-                * 
-               (pi ** (nat2real(size(t)) * -1/2))
-                * 
-               exp(((summate _a910 from 0 to size(t): (t[_a910] ^ 2)) * -1/2))
-                * 
-               product _a from 0 to size(as): 
-                product j from 0 to (summate _a910 from 0 to size(t): 
-                                      (match (_a910 == docUpdate): 
-                                        true: 0
-                                        false: 
-                                         (match (_a == z[_a910]): 
-                                           true: 1
-                                           false: 0))): 
-                 (nat2prob(j) + as[_a])
-                / 
-               product _a from 0 to (summate _a910 from 0 to size(t): 
-                                      (match (_a910 == docUpdate): 
-                                        true: 0
-                                        false: 
-                                         (match (z[_a910] < 0): 
-                                           true: 0
-                                           false: 1))): 
-                (nat2prob(_a) + (summate _a910 from 0 to size(as): as[_a910]))),
-              categorical(array zNew6 of size(as): 
-                           (exp(((summate _a910 from 0 to size(as): 
-                                   (((summate i from 0 to size(t): 
-                                       (match (_a910
-                                                == 
-                                               (match (i == docUpdate): 
-                                                 true: zNew6
-                                                 false: z[i])): 
-                                         true: t[i]
-                                         false: 0))
-                                      ^ 
-                                     2)
-                                     * 
-                                    prob2real(recip(nat2prob((1
-                                                               + 
-                                                              (summate i from 0 to size(t): 
-                                                                (match (_a910
-                                                                         == 
-                                                                        (match (i == docUpdate): 
-                                                                          true: zNew6
-                                                                          false: z[i])): 
-                                                                  true: 1
-                                                                  false: 0))))))))
-                                  / 
-                                 2))
-                             / 
-                            sqrt(nat2prob(product _a from 0 to size(as): 
-                                           (2
-                                             + 
-                                            ((summate _a910 from 0 to size(t): 
-                                               (match (_a
-                                                        == 
-                                                       (match (_a910 == docUpdate): 
-                                                         true: zNew6
-                                                         false: z[_a910])): 
-                                                 true: 1
-                                                 false: 0))
-                                              * 
-                                             2))))
-                             * 
-                            (nat2prob((summate _a910 from 0 to size(t): 
-                                        (match (_a910 == docUpdate): 
-                                          true: 0
-                                          false: 
-                                           (match (zNew6 == z[_a910]): 
-                                             true: 1
-                                             false: 0))))
-                              + 
-                             as[zNew6])
-                             / 
-                            (nat2prob((summate _a910 from 0 to size(t): 
-                                        (match (_a910 == docUpdate): 
-                                          true: 0
-                                          false: 
-                                           (match (z[_a910] < 0): 
-                                             true: 0
-                                             false: 1))))
-                              + 
-                             (summate _a910 from 0 to size(as): as[_a910])))))
-      false: reject. measure(nat))
+fn as array(prob):
+fn z array(nat):
+fn t array(real):
+fn docUpdate nat:
+if size(t) == size(z) && docUpdate < size(z):
+  weight
+    ((2/1) ** (nat2real(size(z)) * (-1/2))
+     * exp((summate _a from 0 to size(z): t[_a] ^ 2) * (-1/2))
+     * pi ** (nat2real(size(z)) * (-1/2))
+     * (product i from 0 to size(as):
+        product j
+        from 0
+        to summate _a from 0 to size(z):
+           if _a == docUpdate: 0 else: if i == z[_a]: 1 else: 0:
+        nat2prob(j) + as[i])
+     / (product i
+        from 0
+        to summate _a from 0 to size(z): if _a == docUpdate: 0 else: 1:
+        nat2prob(i) + (summate _a from 0 to size(as): as[_a]))
+     / (nat2prob
+          (summate _a from 0 to size(z): if _a == docUpdate: 0 else: 1)
+        + (summate _a from 0 to size(as): as[_a])),
+     categorical
+       (array zNewb of size(as):
+        exp
+          ((summate _a from 0 to size(as):
+            (summate kh from 0 to size(z):
+             if _a == (if kh == docUpdate: zNewb else: z[kh]): t[kh]
+             else: +0/1) ^
+            2
+            * prob2real
+                (1/ nat2prob
+                      ((summate kh from 0 to size(z):
+                        if _a == (if kh == docUpdate: zNewb else: z[kh]): 1 else: 0)
+                       + 1)))
+           * (+1/2))
+        / sqrt
+            (nat2prob
+               (product i from 0 to size(as):
+                (summate _a from 0 to size(z):
+                 if i == (if _a == docUpdate: zNewb else: z[_a]): 1 else: 0)
+                + 1))
+        * (nat2prob
+             (summate _a from 0 to size(z):
+              if _a == docUpdate: 0 else: if zNewb == z[_a]: 1 else: 0)
+           + as[zNewb])))
+else: reject. measure(nat)
