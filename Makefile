@@ -4,6 +4,6 @@ clean:
 	rm *.o *.hi GMMRunner GmmSweeps
 simplify:
 	export LOCAL_MAPLE="`which maple`"
-	simplify gmm_gibbs.hk > gmm_gibbs_simp.hk
+	hk-maple -c Simplify --timelimit 300 gmm_gibbs.hk > gmm_gibbs_simp.hk
 experiment:
 	bash run_sweeps.sh
